@@ -7,7 +7,13 @@ import {
   Player,
   WIDTH,
 } from "./actors.ts";
-import { ShmupBoss, ShmupPowerUp, ShmupPrefabSprite } from "./prefab.ts";
+import {
+  Enemy,
+  ENEMY_STATS,
+  type EnemyType,
+  ShmupBoss,
+  ShmupPowerUp,
+} from "./actors.ts";
 import type { Hud } from "./hud.ts";
 import type { LaunchOptions } from "./main.ts";
 import { AutoPilot, KeyboardPilot, type Pilot } from "./pilots.ts";
@@ -15,14 +21,6 @@ import { Rng } from "./rng.ts";
 import { loadSounds, play } from "./sounds.ts";
 import { makeTextures, TINTS } from "./textures.ts";
 import { Backdrop } from "./backdrop.ts";
-import {
-  ENEMY_STATS,
-  type EnemyType,
-  grace_ticks,
-  Route_names,
-  Sectors,
-  spawnAt,
-} from "./route.ts";
 
 interface SpawnEnemy {
   type: EnemyType;
@@ -30,6 +28,7 @@ interface SpawnEnemy {
   y: number;
   side: number;
 }
+import { grace_ticks, route_names, Sectors, spawnAt } from "./route.ts";
 
 const TICK_MS = 1000 / 60;
 const START_LIVES = 3;
@@ -60,7 +59,7 @@ export class GameScene extends Phaser.Scene implements Arena {
   private run;
   private pilot!: Pilot;
   private backdrop!: Backdrop;
-  private enemies: ShmupPrefabSprite[] = [];
+  private enemies: Enemy[] = [];
   private shots: Bullet[] = [];
   private bullets: Bullet[] = [];
   private pickups: ShmupPowerUp[] = [];
@@ -127,7 +126,7 @@ export class GameScene extends Phaser.Scene implements Arena {
 
     if (this.mode === "title") {
       this.hud.setMode("title");
-      this.hud.setRoute(Route_names);
+      this.hud.setRoute(route_names);
       this.hud.setSector(-1);
       this.hud.setBoss(null);
       this.hud.say("");
@@ -333,7 +332,7 @@ export class GameScene extends Phaser.Scene implements Arena {
 
   private spawnEnemy({ type, x, y, side }: SpawnEnemy): void {
     const stats = ENEMY_STATS[type];
-    this.enemies.push(new ShmupPrefabSprite(this, x, y, type, stats, x, side));
+    this.enemies.push(new Enemy(this, x, y, type, stats, x, side));
   }
 
   // one tick of gameplay
@@ -466,7 +465,7 @@ export class GameScene extends Phaser.Scene implements Arena {
     }
   }
 
-  private destroyEnemy(enemy: ShmupPrefabSprite): void {
+  private destroyEnemy(enemy: Enemy): void {
     enemy.setActive(false);
     this.run.score += enemy.myStats.score;
     this.run.kills++;

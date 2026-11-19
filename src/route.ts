@@ -1,46 +1,5 @@
-export type EnemyType = "drone" | "dart" | "turret" | "lancer";
-export interface EnemyStats {
-  maxHp: number;
-  score: number;
-  radius: number;
-  dropChance: number;
-  canShoot: boolean;
-  isPickup: boolean;
-}
-export const ENEMY_STATS: Record<EnemyType, EnemyStats> = {
-  drone: {
-    maxHp: 2,
-    score: 100,
-    radius: 13,
-    dropChance: 0.015,
-    canShoot: true,
-    isPickup: false,
-  },
-  dart: {
-    maxHp: 1,
-    score: 150,
-    radius: 12,
-    dropChance: 0.015,
-    canShoot: false,
-    isPickup: false,
-  },
-  turret: {
-    maxHp: 12,
-    score: 400,
-    radius: 19,
-    dropChance: 0.3,
-    canShoot: true,
-    isPickup: false,
-  },
-  lancer: {
-    maxHp: 4,
-    score: 250,
-    radius: 15,
-    dropChance: 0.06,
-    canShoot: true,
-    isPickup: false,
-  },
-};
+import type { EnemyType } from "./actors.ts";
+
 export type Formation = "line" | "vee" | "column" | "diamond";
 export interface Wave {
   type: EnemyType;
@@ -123,7 +82,7 @@ export const Sectors: Sector[] = [{
   ],
 }];
 export const boss_stop = "The Warden";
-export const Route_names: readonly string[] = [
+export const route_names: readonly string[] = [
   ...Sectors.map((sector) => sector.name),
   boss_stop,
 ];
